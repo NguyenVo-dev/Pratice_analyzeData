@@ -2,12 +2,25 @@ import yfinance as yf
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import warnings
+
+warnings.filterwarnings('ignore', category=RuntimeWarning, module='pandas.io.formats.format')
 
 ticker=["TME","TCTZF","HACK","IHAK"]
 
 data = yf.download(ticker, period="6mo", interval="1d")
 
 print(data.head())
+
+# Check for missing data
+print("Data overview:")
+print(f"Shape: {data.shape}")
+print(f"Columns: {data.columns.tolist()}")
+print(f"Date range: {data.index[0]} to {data.index[-1]}")
+print()
+
+# Handle missing values in price data
+data = data.ffill()  # Forward fill missing values
 normalized_data = data['Close'] / data['Close'].iloc[0]
 
 plt.figure(figsize=(12, 6))
